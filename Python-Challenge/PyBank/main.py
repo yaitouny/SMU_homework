@@ -11,7 +11,6 @@ maxIncrease = 0
 minDecrease = 0
 
 
-
 with open(budget_data) as csvfile:
 	csv_reader = csv.reader(csvfile, delimiter = ",")
 
