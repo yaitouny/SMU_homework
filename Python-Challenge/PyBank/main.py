@@ -7,6 +7,9 @@ netTotal = 0
 averageChange = 0
 newList = []
 changeList = []
+maxIncrease = 0
+minDecrease = 0
+
 
 
 with open(budget_data) as csvfile:
@@ -18,14 +21,23 @@ with open(budget_data) as csvfile:
 	for row in csv_reader:
 		totalMonths += 1
 		netTotal += int(row[1])
-		#print(row)
 		newList.append(row[1])
 
-	
-	for i in range(len(newList) -1):
+		if int(row[1]) > maxIncrease:
+			maxIncrease = int(row[1])
+			bestMonth = row[0]
+
+		elif int(row[1]) < minDecrease:
+			minDecrease = int(row[1])
+			worstMonth = row[0]
+			
+
+	for i in range(len(newList) - 1):
 		changeList.append(int(newList[i+1]) - int(newList[i]))
+	
 	averageChange = round(sum(changeList) / len(changeList), 2)
  
+	
 	
 	print("\n")
 	print("Financial Analysis")
@@ -33,4 +45,6 @@ with open(budget_data) as csvfile:
 	print(f"Total Months: {totalMonths}")
 	print(f"Total: ${netTotal}")
 	print(f"Average Change: ${averageChange}")
-	
+	print(f"Greatest Decrease in Profits: {bestMonth} (${maxIncrease})")
+	print(f"Greatest Decrease in Profits: {worstMonth} (${minDecrease})")
+	print("\n")
