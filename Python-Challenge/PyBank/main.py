@@ -37,14 +37,15 @@ with open(budget_data) as csvfile:
 	
 	averageChange = round(sum(changeList) / len(changeList), 2)
  
+	output = r"Python-Challenge/PyBank/Analysis summary.txt"
+	f = open(output, "w")
+
 	
-	
-	print("\n")
-	print("Financial Analysis")
-	print("------------------------------------")
-	print(f"Total Months: {totalMonths}")
-	print(f"Total: ${netTotal}")
-	print(f"Average Change: ${averageChange}")
-	print(f"Greatest Decrease in Profits: {bestMonth} (${maxIncrease})")
-	print(f"Greatest Decrease in Profits: {worstMonth} (${minDecrease})")
-	print("\n")
+	print("Financial Analysis",file = f)
+	print("------------------------------------",file=f)
+	print(f"Total Months: {totalMonths}",file=f)
+	print(f"Total: ${netTotal}",file=f)
+	print(f"Average Change: ${averageChange}",file=f)
+	print(f"Greatest Decrease in Profits: {bestMonth} (${maxIncrease})",file=f)
+	print(f"Greatest Decrease in Profits: {worstMonth} (${minDecrease})",file=f)
+	print("\n",file=f)
