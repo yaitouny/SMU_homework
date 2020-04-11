@@ -5,8 +5,9 @@ budget_data = r"03-Python/Instructions/PyBank/Resources/budget_data.csv"
 totalMonths = 0
 netTotal = 0
 averageChange = 0
+newList = []
 changeList = []
-change = 0
+
 
 with open(budget_data) as csvfile:
 	csv_reader = csv.reader(csvfile, delimiter = ",")
@@ -16,16 +17,20 @@ with open(budget_data) as csvfile:
 
 	for row in csv_reader:
 		totalMonths += 1
-		netTotal += float(row[1])
+		netTotal += int(row[1])
+		#print(row)
+		newList.append(row[1])
 
-		changeList.append(row[1])
-		for i in range(len(changeList) - 1):
-			change = float(netTotal[i+1])-float(netTotal[i])
+	
+	for i in range(len(newList) -1):
+		changeList.append(int(newList[i+1]) - int(newList[i]))
+	averageChange = round(sum(changeList) / len(changeList), 2)
+ 
 	
 	print("\n")
 	print("Financial Analysis")
 	print("------------------------------------")
 	print(f"Total Months: {totalMonths}")
 	print(f"Total: ${netTotal}")
-	#print(f"Average Change: ${averageChange}")
-	print(change)
+	print(f"Average Change: ${averageChange}")
+	
