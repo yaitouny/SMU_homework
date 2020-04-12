@@ -1,11 +1,11 @@
-import csv
+import csv 
 
-election_data = r"03-Python/Instructions/PyPoll/Resources/election_data.csv"
+election_data = r"Python-Challenge/PyPoll/election_data.csv"
 
 voteCount = 0
 candidates = []
 names = []
-vote1 = vote2 = vote3 = vote4 = 0 
+vote1 = vote2 = vote3 = vote4 = 0
 percentVote1 = percentVote2 = percentVote3 = percentVote4 = 0
 winnerVote = 0
 
@@ -13,7 +13,7 @@ with open(election_data) as csvfile:
 	csv_reader = csv.reader(csvfile, delimiter=",")
 
 	csv_header = next(csvfile)
-	print(csv_header)
+	#print(csv_reader)
 
 	for row in csv_reader:
 		voteCount += 1
@@ -55,18 +55,33 @@ with open(election_data) as csvfile:
 		winnerVote = percentVote4
 		winnerName = names[3]
 
-	output = r"Python-Challenge/PyPoll/Election summary.txt"
-	f = open(output, "w")
-
-	print("Election Results", file =f)
-	print("-------------------------------", file =f)
-	print(f"Total Votes: {voteCount}", file =f)
-	print("-------------------------------", file =f)
+	#print statements in the text file
+	print("Election Results")
+	print("-------------------------------")
+	print(f"Total Votes: {voteCount}")
+	print("-------------------------------")
 	#print(*names , sep = ":\n")
-	print(f"{names[0]}: {percentVote1}% ({vote1})", file =f)
-	print(f"{names[1]}: {percentVote2}% ({vote2})", file =f)
-	print(f"{names[2]}: {percentVote3}% ({vote3})", file =f)
-	print(f"{names[3]}: {percentVote4}% ({vote4})", file =f)
-	print("-------------------------------", file =f)
-	print(f"Winner: {winnerName} ", file =f)
-	print("-------------------------------", file =f)
+	print(f"{names[0]}: {percentVote1}% ({vote1})")
+	print(f"{names[1]}: {percentVote2}% ({vote2})")
+	print(f"{names[2]}: {percentVote3}% ({vote3})")
+	print(f"{names[3]}: {percentVote4}% ({vote4})")
+	print("-------------------------------")
+	print(f"Winner: {winnerName} ")
+	print("-------------------------------")
+
+output = r"Python-Challenge/PyPoll/Election summary.txt"
+
+with open(output, "w") as file:
+	#writer = txt.writer(file)
+
+	file.write("Election Results\n")
+	file.write("-------------------------------\n")
+	file.write(f"Total Votes: {voteCount}\n")
+	file.write("-------------------------------\n")
+	file.write(f"{names[0]}: {percentVote1}% ({vote1})\n")
+	file.write(f"{names[1]}: {percentVote2}% ({vote2})\n")
+	file.write(f"{names[2]}: {percentVote3}% ({vote3})\n")
+	file.write(f"{names[3]}: {percentVote4}% ({vote4})\n")
+	file.write("-------------------------------\n")
+	file.write(f"Winner: {winnerName}\n")
+	file.write("-------------------------------\n")
