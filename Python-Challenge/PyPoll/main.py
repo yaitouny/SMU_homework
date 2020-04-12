@@ -43,27 +43,30 @@ with open(election_data) as csvfile:
 		winnerVote = percentVote1
 		winnerName = names[0]
 
-	elif percentVote2 > winnerVote:
+	if percentVote2 > winnerVote:
 		winnerVote = percentVote2
 		winnerName = names[1]
 	
-	elif percentVote3 > winnerVote:
+	if percentVote3 > winnerVote:
 		winnerVote = percentVote3
 		winnerName = names[2]
 
-	else:
+	if percentVote4 > winnerVote:
 		winnerVote = percentVote4
 		winnerName = names[3]
 
-	print("Election Results")
-	print("-------------------------------")
-	print(f"Total Votes: {voteCount}")
-	print("-------------------------------")
+	output = r"Python-Challenge/PyPoll/Election summary.txt"
+	f = open(output, "w")
+
+	print("Election Results", file =f)
+	print("-------------------------------", file =f)
+	print(f"Total Votes: {voteCount}", file =f)
+	print("-------------------------------", file =f)
 	#print(*names , sep = ":\n")
-	print(f"{names[0]}: {percentVote1}% ({vote1})")
-	print(f"{names[1]}: {percentVote2}% ({vote2})")
-	print(f"{names[2]}: {percentVote3}% ({vote3})")
-	print(f"{names[3]}: {percentVote4}% ({vote4})")
-	print("-------------------------------")
-	print(f"Winner: {winnerName} ")
-	print("-------------------------------")
+	print(f"{names[0]}: {percentVote1}% ({vote1})", file =f)
+	print(f"{names[1]}: {percentVote2}% ({vote2})", file =f)
+	print(f"{names[2]}: {percentVote3}% ({vote3})", file =f)
+	print(f"{names[3]}: {percentVote4}% ({vote4})", file =f)
+	print("-------------------------------", file =f)
+	print(f"Winner: {winnerName} ", file =f)
+	print("-------------------------------", file =f)
