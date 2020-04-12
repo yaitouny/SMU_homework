@@ -1,6 +1,6 @@
 import csv
 
-budget_data = r"03-Python/Instructions/PyBank/Resources/budget_data.csv"
+budget_data = r"Python-Challenge/PyBank/budget_data.csv"
 
 totalMonths = 0
 netTotal = 0
@@ -35,16 +35,27 @@ with open(budget_data) as csvfile:
 		changeList.append(int(newList[i+1]) - int(newList[i]))
 	
 	averageChange = round(sum(changeList) / len(changeList), 2)
- 
-	output = r"Python-Challenge/PyBank/Analysis summary.txt"
-	f = open(output, "w")
+	
+	print("Financial Analysis")
+	print("------------------------------------")
+	print(f"Total Months: {totalMonths}")
+	print(f"Total: ${netTotal}")
+	print(f"Average Change: ${averageChange}")
+	print(f"Greatest Decrease in Profits: {bestMonth} (${maxIncrease})")
+	print(f"Greatest Decrease in Profits: {worstMonth} (${minDecrease})")
+	print("\n")
+
+
+
+output = r"Python-Challenge/PyBank/Analysis summary.txt"
+with open(output, "w") as file:
 
 	
-	print("Financial Analysis",file = f)
-	print("------------------------------------",file=f)
-	print(f"Total Months: {totalMonths}",file=f)
-	print(f"Total: ${netTotal}",file=f)
-	print(f"Average Change: ${averageChange}",file=f)
-	print(f"Greatest Decrease in Profits: {bestMonth} (${maxIncrease})",file=f)
-	print(f"Greatest Decrease in Profits: {worstMonth} (${minDecrease})",file=f)
-	print("\n",file=f)
+	file.write("Financial Analysis\n")
+	file.write("------------------------------------\n")
+	file.write(f"Total Months: {totalMonths}\n")
+	file.write(f"Total: ${netTotal}\n")
+	file.write(f"Average Change: ${averageChange}\n")
+	file.write(f"Greatest Decrease in Profits: {bestMonth} (${maxIncrease})\n")
+	file.write(f"Greatest Decrease in Profits: {worstMonth} (${minDecrease})\n")
+	file.write("\n")
