@@ -1,7 +1,9 @@
 import csv
 import datetime
 
-employee_data = r"Python-Challenge/PyBoss/employee_data.csv"
+employee_data = r"PyBoss/employee_data.csv"
+
+#initializing variables
 name = []
 firstName = []
 lastName = []
@@ -11,6 +13,7 @@ ssn = []
 hidden_ssn = []
 states = []
 empID = []
+newDate = []
 
 us_state_abbrev = {
 	"Alabama": "AL",
@@ -73,29 +76,33 @@ with open (employee_data) as csvfile:
 	#print(f"Header: {csv_header}")
 
 	for row in csv_reader:
+		#add employees ID to a list
 		empID.append(row[0])
 
+		#split names into 2 columns
 		name = row[1].split(" ")
 		firstName.append(name[0])
 		lastName.append(name[1])
 
+		#reformatting dates 
 		dateOfBirth = row[2]
-
 		reformatted_date = datetime.datetime.strptime(dateOfBirth, '%Y-%m-%d').strftime('%m/%d/%y')
+		newDate.append(reformatted_date)
+		
 
-	
+		#replace/hide part of the ssn
 		ssn = row[3].split("-")
 		hidden_ssn.append("***-**-" + ssn[2])
 		#hidden_ssn = ssn.replace(ssn, "***-**",6)
 
 		states.append(us_state_abbrev[row[4]])
 
-cleaned_csv = zip(empID, firstName, lastName, reformatted_date, hidden_ssn, states)
+cleaned_csv = zip(empID, firstName, lastName, newDate, hidden_ssn, states)
 
-output_path = r"Python-Challenge/PyBoss/output.csv"	
+output_path = r"PyBoss/output.csv"	
 
 with open(output_path, 'w') as datafile:
-
+	
 	csvwriter = csv.writer(datafile)
 	csvwriter.writerow(['Emp ID', ' First Name', ' Last Name', ' DOB', ' SSN', ' State'])
 	csvwriter.writerows(cleaned_csv)
