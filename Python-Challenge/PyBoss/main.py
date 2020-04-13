@@ -73,15 +73,17 @@ with open (employee_data) as csvfile:
 	#print(f"Header: {csv_header}")
 
 	for row in csv_reader:
-		empID = row[0]
+		empID.append(row[0])
 
 		name = row[1].split(" ")
 		firstName.append(name[0])
 		lastName.append(name[1])
 
 		dateOfBirth = row[2]
+
 		reformatted_date = datetime.datetime.strptime(dateOfBirth, '%Y-%m-%d').strftime('%m/%d/%y')
-		
+
+	
 		ssn = row[3].split("-")
 		hidden_ssn.append("***-**-" + ssn[2])
 		#hidden_ssn = ssn.replace(ssn, "***-**",6)
@@ -92,8 +94,8 @@ cleaned_csv = zip(empID, firstName, lastName, reformatted_date, hidden_ssn, stat
 
 output_path = r"Python-Challenge/PyBoss/output.csv"	
 
-with open(output_path, 'w') as csvfile:
+with open(output_path, 'w') as datafile:
 
-	csvwriter = csv.writer(csvfile, delimiter=',')
+	csvwriter = csv.writer(datafile)
 	csvwriter.writerow(['Emp ID', ' First Name', ' Last Name', ' DOB', ' SSN', ' State'])
-	csvwriter.writerow(cleaned_csv)
+	csvwriter.writerows(cleaned_csv)

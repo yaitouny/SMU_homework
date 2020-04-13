@@ -1,2 +1,9 @@
 Emp ID, First Name, Last Name, DOB, SSN, State
-"('3', 'John', 'Mathews', '0', '***-**-9165', 'ND')","('2', 'Nathan', 'Moore', '1', '***-**-7469', 'ME')","('3', 'Amanda', 'Douglas', '/', '***-**-6961', 'ID')"
+232,John,Mathews,0,***-**-9165,ND
+533,Nathan,Moore,1,***-**-7469,ME
+256,Amanda,Douglas,/,***-**-6961,ID
+189,Heather,Andrews,1,***-**-1797,VT
+284,Daniel,Hernandez,3,***-**-7473,CO
+512,Danny,Pena,/,***-**-9878,MN
+126,Gary,Knight,8,***-**-1242,AR
+556,Robin,Carroll,2,***-**-7194,CA
