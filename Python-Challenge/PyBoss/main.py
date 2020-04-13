@@ -79,10 +79,11 @@ with open (employee_data) as csvfile:
 		dateOfBirth = row[2]
 		reformatted_date = datetime.datetime.strptime(dateOfBirth, '%Y-%m-%d').strftime('%m/%d/%y')
 		
-		ssn = row[3].split("-")
-		for i in ssn:
-			hidden_ssn.append("*")
-			print(hidden_ssn)
+		ssn = row[3]
+		hidden_ssn = ssn.replace(ssn, "***-**")
+		print(hidden_ssn)
+		
+	
 
 output_path = r"Python-Challenge/PyBoss/output.csv"	
 
