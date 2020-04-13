@@ -9,8 +9,10 @@ dateOfBirth = []
 reformatted_date = []
 ssn = []
 hidden_ssn = []
+states = []
+empID = []
 
-states = {
+us_state_abbrev = {
 	"Alabama": "AL",
 	"Alaska": "AK",
 	"Arizona": "AZ",
@@ -31,7 +33,7 @@ states = {
 	"Louisiana": "LA",
 	"Maine": "ME",
 	"Maryland": "MD",
-	"Massachussetts": "MA",
+	"Massachusetts": "MA",
 	"Michigan": "MI",
 	"Minnesota": "MN",
 	"Mississippi": "MS",
@@ -68,10 +70,11 @@ with open (employee_data) as csvfile:
 	csv_reader = csv.reader(csvfile, delimiter=",")
 
 	csv_header = next(csvfile)
-	print(f"Header: {csv_header}")
+	#print(f"Header: {csv_header}")
 
 	for row in csv_reader:
-		
+		empID = row[0]
+
 		name = row[1].split(" ")
 		firstName.append(name[0])
 		lastName.append(name[1])
@@ -79,17 +82,18 @@ with open (employee_data) as csvfile:
 		dateOfBirth = row[2]
 		reformatted_date = datetime.datetime.strptime(dateOfBirth, '%Y-%m-%d').strftime('%m/%d/%y')
 		
-		ssn = row[3]
-		hidden_ssn = ssn.replace(ssn, "***-**")
-		print(hidden_ssn)
-		
-	
+		ssn = row[3].split("-")
+		hidden_ssn.append("***-**-" + ssn[2])
+		#hidden_ssn = ssn.replace(ssn, "***-**",6)
+
+		states.append(us_state_abbrev[row[4]])
+
+cleaned_csv = zip(empID, firstName, lastName, reformatted_date, hidden_ssn, states)
 
 output_path = r"Python-Challenge/PyBoss/output.csv"	
 
 with open(output_path, 'w') as csvfile:
 
-    csvwriter = csv.writer(csvfile, delimiter=',')
-
-    csvwriter.writerow(['Emp ID', ' First Name', ' Last Name', ' DOB', ' SSN', ' State'])
-		
+	csvwriter = csv.writer(csvfile, delimiter=',')
+	csvwriter.writerow(['Emp ID', ' First Name', ' Last Name', ' DOB', ' SSN', ' State'])
+	csvwriter.writerow(cleaned_csv)
