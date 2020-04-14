@@ -69,19 +69,20 @@ with open(election_data) as csvfile:
 	print(f"Winner: {winnerName} ")
 	print("-------------------------------")
 
-output = r"Python-Challenge/PyPoll/Election summary.txt"
+output = r"Python-Challenge/PyPoll/Election Data.csv"
 
-with open(output, "w") as file:
-	#writer = txt.writer(file)
+with open(output, "w") as datafile:
 
-	file.write("Election Results\n")
-	file.write("-------------------------------\n")
-	file.write(f"Total Votes: {voteCount}\n")
-	file.write("-------------------------------\n")
-	file.write(f"{names[0]}: {percentVote1}% ({vote1})\n")
-	file.write(f"{names[1]}: {percentVote2}% ({vote2})\n")
-	file.write(f"{names[2]}: {percentVote3}% ({vote3})\n")
-	file.write(f"{names[3]}: {percentVote4}% ({vote4})\n")
-	file.write("-------------------------------\n")
-	file.write(f"Winner: {winnerName}\n")
-	file.write("-------------------------------\n")
+	csvwriter = csv.writer(datafile)
+
+	csvwriter.writerow(['Election Results'])
+	csvwriter.writerow(['-------------------------------'])
+	csvwriter.writerow([f'Total Votes: {voteCount}'])
+	csvwriter.writerow(['-------------------------------'])
+	csvwriter.writerow([f'{names[0]}: {percentVote1}% ({vote1})'])
+	csvwriter.writerow([f'{names[1]}: {percentVote2}% ({vote2})'])
+	csvwriter.writerow([f'{names[2]}: {percentVote3}% ({vote3})'])
+	csvwriter.writerow([f'{names[3]}: {percentVote4}% ({vote4})'])
+	csvwriter.writerow(['-------------------------------'])
+	csvwriter.writerow([f'Winner: {winnerName}'])
+	csvwriter.writerow(['-------------------------------'])

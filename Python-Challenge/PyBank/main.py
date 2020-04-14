@@ -60,12 +60,3 @@ with open(output, 'w') as datafile:
 	csvwriter.writerow([f'Average Change: ${averageChange}'])
 	csvwriter.writerow([f'Greatest Decrease in Profits: {bestMonth} (${maxIncrease})'])
 	csvwriter.writerow([f'Greatest Decrease in Profits: {worstMonth} (${minDecrease})'])
-
-	#file.write("Financial Analysis\n")
-	#file.write("------------------------------------\n")
-	#file.write(f"Total Months: {totalMonths}\n")
-	#file.write(f"Total: ${netTotal}\n")
-	#file.write(f"Average Change: ${averageChange}\n")
-	#file.write(f"Greatest Decrease in Profits: {bestMonth} (${maxIncrease})\n")
-	#file.write(f"Greatest Decrease in Profits: {worstMonth} (${minDecrease})\n")
-	#file.write("\n")
