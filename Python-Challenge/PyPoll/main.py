@@ -9,6 +9,7 @@ vote1 = vote2 = vote3 = vote4 = 0
 percentVote1 = percentVote2 = percentVote3 = percentVote4 = 0
 winnerVote = 0
 
+#open and read in the csv file 
 with open(election_data) as csvfile:
 	csv_reader = csv.reader(csvfile, delimiter=",")
 
@@ -16,6 +17,7 @@ with open(election_data) as csvfile:
 	#print(csv_reader)
 
 	for row in csv_reader:
+		#find the total numbers of votes
 		voteCount += 1
 		candidates.append(row[2])
 
@@ -23,6 +25,7 @@ with open(election_data) as csvfile:
 		if x not in names:
 			names.append(x)
 
+	#calculate the percentages of votes of each candidate
 	for i in range(len(candidates) - 1):
 		if candidates[i] == names[0]:
 			vote1 += 1
@@ -39,6 +42,7 @@ with open(election_data) as csvfile:
 			vote4 += 1
 			percentVote4 = round(100 * vote4/len(candidates), 3)
 
+	#finding the name of candidates with max votes 
 	if percentVote1 > winnerVote:
 		winnerVote = percentVote1
 		winnerName = names[0]
@@ -55,7 +59,7 @@ with open(election_data) as csvfile:
 		winnerVote = percentVote4
 		winnerName = names[3]
 
-	#print statements in the text file
+	#print statements
 	print("Election Results")
 	print("-------------------------------")
 	print(f"Total Votes: {voteCount}")
@@ -69,6 +73,7 @@ with open(election_data) as csvfile:
 	print(f"Winner: {winnerName} ")
 	print("-------------------------------")
 
+#print output in a csv file
 output = r"Python-Challenge/PyPoll/Election Data.csv"
 
 with open(output, "w") as datafile:
