@@ -47,15 +47,25 @@ with open(budget_data) as csvfile:
 
 
 
-output = r"Python-Challenge/PyBank/Analysis summary.txt"
-with open(output, "w") as file:
+output = r"Python-Challenge/PyBank/Analysis Summary.csv"
 
-	
-	file.write("Financial Analysis\n")
-	file.write("------------------------------------\n")
-	file.write(f"Total Months: {totalMonths}\n")
-	file.write(f"Total: ${netTotal}\n")
-	file.write(f"Average Change: ${averageChange}\n")
-	file.write(f"Greatest Decrease in Profits: {bestMonth} (${maxIncrease})\n")
-	file.write(f"Greatest Decrease in Profits: {worstMonth} (${minDecrease})\n")
-	file.write("\n")
+with open(output, 'w') as datafile:
+
+	csvwriter = csv.writer(datafile)
+
+	csvwriter.writerow(['Financial Analysis'])
+	csvwriter.writerow(['------------------------------------'])
+	csvwriter.writerow([f'Total Months: {totalMonths}'])
+	csvwriter.writerow([f'Total: ${netTotal}'])
+	csvwriter.writerow([f'Average Change: ${averageChange}'])
+	csvwriter.writerow([f'Greatest Decrease in Profits: {bestMonth} (${maxIncrease})'])
+	csvwriter.writerow([f'Greatest Decrease in Profits: {worstMonth} (${minDecrease})'])
+
+	#file.write("Financial Analysis\n")
+	#file.write("------------------------------------\n")
+	#file.write(f"Total Months: {totalMonths}\n")
+	#file.write(f"Total: ${netTotal}\n")
+	#file.write(f"Average Change: ${averageChange}\n")
+	#file.write(f"Greatest Decrease in Profits: {bestMonth} (${maxIncrease})\n")
+	#file.write(f"Greatest Decrease in Profits: {worstMonth} (${minDecrease})\n")
+	#file.write("\n")
