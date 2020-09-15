@@ -1,137 +1,181 @@
 from splinter import Browser
-from splinter.exceptions import ElementDoesNotExist
 from bs4 import BeautifulSoup
 import pandas as pd
+import datetime as dt
+import time
+import re
 
 
-scraped_dict = {}
+def scrape_all():
 
-def init_browser():
-  executable_path = {'executable_path': '/usr/local/bin/chromedriver'}
-  return Browser('chrome', **executable_path, headless=False)
+    # Initiate headless driver for deployment
+    browser = Browser("chrome", executable_path="chromedriver", headless=True)
+    news_title, news_paragraph = mars_news(browser)
 
-def marsNews():
-  try:
-    browser = init_browser()
+    # Run all scraping functions and store in dictionary.
+    data = {
+        "news_title": news_title,
+        "news_paragraph": news_paragraph,
+        "featured_image": featured_image(browser),
+        "hemispheres": hemispheres(browser),
+        "weather": twitter_weather(browser),
+        "facts": mars_facts(),
+        "last_modified": dt.datetime.now()
+    }
 
+    # Stop webdriver and return data
+    browser.quit()
+    return data
+
+
+def mars_news(browser):
     url = "https://mars.nasa.gov/news/"
     browser.visit(url)
 
+    # Get first list item and wait half a second if not immediately present
+    browser.is_element_present_by_css("ul.item_list li.slide", wait_time=0.5)
+
     html = browser.html
-    news_soup = BeautifulSoup(html, 'lxml')
-    
-    titles = news_soup.find_all('div', class_="content_title")
-    p = news_soup.find_all('div', class_="article_teaser_body")
-    first_title = ""
-    for title in titles:
-      if title.a:
-        first_title = title
-        break
-    news_title = first_title.a.text.strip()
-    news_p = p[0].text.strip()
-    
-    scraped_dict['news_title'] = news_title
-    scraped_dict['news_p'] = news_p
+    news_soup = BeautifulSoup(html, "html.parser")
 
-    return scraped_dict
+    try:
+        slide_elem = news_soup.select_one("ul.item_list li.slide")
+        news_title = slide_elem.find("div", class_="content_title").get_text()
+        news_p = slide_elem.find(
+            "div", class_="article_teaser_body").get_text()
 
-  finally:
-    browser.quit()
+    except AttributeError:
+        return None, None
 
-def marsSpaceImages():
-  try: 
-    browser = init_browser()
+    return news_title, news_p
 
+
+def featured_image(browser):
     url = "https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars"
     browser.visit(url)
+
+    # Find and click the full image button
+    full_image_elem = browser.find_by_id("full_image")
+    full_image_elem.click()
+
+    # Find the more info button and click that
+    browser.is_element_present_by_text("more info", wait_time=0.5)
+    more_info_elem = browser.links.find_by_partial_text("more info")
+    more_info_elem.click()
+
+    # Parse the resulting html with soup
     html = browser.html
-    image_soup = BeautifulSoup(html, "lxml")
-    image = image_soup.find_all(class_="carousel_item")
-    featured_image_url = 'https://www.jpl.nasa.gov' + image[0]["style"].split(" ")[1].split("'")[1]
-    
-    scraped_dict['featured_image_url'] = featured_image_url
+    img_soup = BeautifulSoup(html, "html.parser")
 
-    return scraped_dict
+    # Find the relative image url
+    img = img_soup.select_one("figure.lede a img")
 
-  finally:
-    browser.quit()
+    try:
+        img_url_rel = img.get("src")
+
+    except AttributeError:
+        return None
+
+    # Use the base url to create an absolute url
+    img_url = f"https://www.jpl.nasa.gov{img_url_rel}"
+
+    return img_url
 
 
+def hemispheres(browser):
+
+    # A way to break up long strings
+    url = (
+        "https://astrogeology.usgs.gov/search/"
+        "results?q=hemisphere+enhanced&k1=target&v1=Mars"
+    )
+
+    browser.visit(url)
+
+    # Click the link, find the sample anchor, return the href
+    hemisphere_image_urls = []
+    for i in range(4):
+
+        # Find the elements on each loop to avoid a stale element exception
+        browser.find_by_css("a.product-item h3")[i].click()
+
+        hemi_data = scrape_hemisphere(browser.html)
+
+        # Append hemisphere object to list
+        hemisphere_image_urls.append(hemi_data)
+
+        # Finally, we navigate backwards
+        browser.back()
+
+    return hemisphere_image_urls
 
 
-def marsWeather():
-  try:
-    browser = init_browser()
-
+def twitter_weather(browser):
     url = "https://twitter.com/marswxreport?lang=en"
     browser.visit(url)
+
+    # Pause for 5 seconds to let the Twitter page load before extracting the html
+    time.sleep(5)
+
     html = browser.html
-    weather_soup = BeautifulSoup(html, 'lxml')
-    mars_weather = weather_soup.find_all("span")
-    mars_weather_tweet = ""
-    for tweet in mars_weather:
-      if tweet.text:
-        if "InSight sol" in tweet.text:
-          mars_weather_tweet = tweet.text
-          break
-    scraped_dict['mars_weather_tweet'] = mars_weather_tweet
+    weather_soup = BeautifulSoup(html, "html.parser")
 
-    return scraped_dict
+    # First, find a tweet with the data-name `Mars Weather`
+    tweet_attrs = {"class": "tweet", "data-name": "Mars Weather"}
+    mars_weather_tweet = weather_soup.find("div", attrs=tweet_attrs)
 
-  finally:
-    browser.quit()
+    # Next, search within the tweet for the p tag or span tag containing the tweet text
+    # As Twitter is frequently making changes the try/except will identify the tweet
+    # text using a regular expression pattern that includes the string 'sol' if there
+    # is no p tag with a class of 'tweet-text'
+    try:
+        mars_weather = mars_weather_tweet.find("p", "tweet-text").get_text()
 
+    except AttributeError:
 
+        pattern = re.compile(r'sol')
+        mars_weather = weather_soup.find('span', text=pattern).text
 
-
-def marsFacts():
-  try: 
-    browser = init_browser()
-
-    url = "https://space-facts.com/mars/"
-    browser.visit(url)
-    html = browser.html
-    fact_soup = BeautifulSoup(html, 'lxml')
-    table = pd.read_html(url)
-    df = table[0]
-    df.columns = ['Attribute', 'Value']
-    scraped_dict["mars_facts"] = df.to_html()
-
-    return scraped_dict
-    
-
-  finally:
-    browser.quit()
+    return mars_weather
 
 
+def scrape_hemisphere(html_text):
+    # Soupify the html text
+    hemi_soup = BeautifulSoup(html_text, "html.parser")
+
+    # Try to get href and text except if error.
+    try:
+        title_elem = hemi_soup.find("h2", class_="title").get_text()
+        sample_elem = hemi_soup.find("a", text="Sample").get("href")
+
+    except AttributeError:
+
+        # Image error returns None for better front-end handling
+        title_elem = None
+        sample_elem = None
+
+    hemisphere = {
+        "title": title_elem,
+        "img_url": sample_elem
+    }
+
+    return hemisphere
 
 
+def mars_facts():
+    try:
+        df = pd.read_html("http://space-facts.com/mars/")[0]
+    except BaseException:
+        return None
 
-def marsHemispheres():
-  try:
-    browser = init_browser()
+    df.columns = ["description", "value"]
+    df.set_index("description", inplace=True)
 
-    url = "https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars"
-    browser.visit(url)
-    html = browser.html
-    hemisphere_soup = BeautifulSoup(html, 'lxml')
-    items = hemisphere_soup.find_all('div', class_='item')
-    hemisphere_image_urls = []
+    # Add some bootstrap styling to <table>
+    return df.to_html(classes="table table-striped")
 
-    for item in items:
-      title = item.find('h3').text
-      link = item.find('a', class_="itemLink")['href']
-      hemisphere_link = "https://astrogeology.usgs.gov" + link
-      browser.visit(hemisphere_link)
-      hemisphere_html = browser.html
-      new_soup = BeautifulSoup(hemisphere_html, 'lxml')
-      image = new_soup.find('img', class_="wide-image")['src']
-      img_url = "https://astrogeology.usgs.gov"+ image
-      hemisphere_image_urls.append({"title": title, "image_url":img_url})
 
-      scraped_dict["hemisphere_image_urls"] = hemisphere_image_urls
+if __name__ == "__main__":
 
-    return scraped_dict
-
-  finally:
-    browser.quit()
+    # If running as script, print scraped data
+    print(scrape_all())
